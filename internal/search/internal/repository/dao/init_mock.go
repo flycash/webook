@@ -1,4 +1,4 @@
-//go:build !e2e && !mock
+//go:build e2e || mock
 
 // Copyright 2023 ecodeclub
 //
@@ -26,40 +26,39 @@ import (
 )
 
 var (
-	//go:embed case_index.json
-	caseIndex string
-	//go:embed question_index.json
-	questionIndex string
-	//go:embed skill_index.json
-	skillIndex string
-	//go:embed questionset_index.json
-	questionSetIndex string
+	//go:embed case_test_index.json
+	testCaseIndex string
+	//go:embed question_test_index.json
+	testQuestionIndex string
+	//go:embed skill_test_index.json
+	testSkillIndex string
+	//go:embed questionset_test_index.json
+	testQuestionSetIndex string
 )
 
-// InitES 创建索引
 func InitES(client *elastic.Client) error {
 	const timeout = time.Second * 10
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	var eg errgroup.Group
 	eg.Go(func() error {
-		return tryCreateIndex(ctx, client, PubCaseIndexName, caseIndex)
+		return tryCreateIndex(ctx, client, PubCaseIndexName, testCaseIndex)
 	})
 	eg.Go(func() error {
-		return tryCreateIndex(ctx, client, CaseIndexName, caseIndex)
+		return tryCreateIndex(ctx, client, CaseIndexName, testCaseIndex)
 	})
 	eg.Go(func() error {
-		return tryCreateIndex(ctx, client, PubQuestionIndexName, questionIndex)
+		return tryCreateIndex(ctx, client, PubQuestionIndexName, testQuestionIndex)
 	})
 
 	eg.Go(func() error {
-		return tryCreateIndex(ctx, client, QuestionIndexName, questionIndex)
+		return tryCreateIndex(ctx, client, QuestionIndexName, testQuestionIndex)
 	})
 	eg.Go(func() error {
-		return tryCreateIndex(ctx, client, SkillIndexName, skillIndex)
+		return tryCreateIndex(ctx, client, SkillIndexName, testSkillIndex)
 	})
 	eg.Go(func() error {
-		return tryCreateIndex(ctx, client, QuestionSetIndexName, questionSetIndex)
+		return tryCreateIndex(ctx, client, QuestionSetIndexName, testQuestionSetIndex)
 	})
 	return eg.Wait()
 }

@@ -83,7 +83,7 @@ var daoOnce = sync.Once{}
 
 func InitIndexOnce(es *elastic.Client) {
 	daoOnce.Do(func() {
-		err := dao.InitEsTest(es)
+		err := dao.InitES(es)
 		if err != nil {
 			panic(err)
 		}

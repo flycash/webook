@@ -37,3 +37,20 @@ func (a *anyESDAO) Input(ctx context.Context, index string, docID string, data s
 		BodyJson(data).Do(ctx)
 	return err
 }
+
+// 临时放这里
+func tryCreateIndex(ctx context.Context,
+	client *elastic.Client,
+	idxName, idxCfg string,
+) error {
+	// 索引可能已经建好了
+	ok, err := client.IndexExists(idxName).Do(ctx)
+	if err != nil {
+		return err
+	}
+	if ok {
+		return nil
+	}
+	_, err = client.CreateIndex(idxName).Body(idxCfg).Do(ctx)
+	return err
+}
